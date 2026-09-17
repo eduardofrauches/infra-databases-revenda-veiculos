@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-vendas-config
+  labels:
+    app: postgres-vendas
+data:
+  POSTGRES_DB: veiculos_vendas_db
