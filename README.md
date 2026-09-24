@@ -1,7 +1,8 @@
 # infra-databases-revenda-veiculos
 
-Manifests Kubernetes (Kustomize) da infraestrutura de banco de dados
-compartilhada pela plataforma de revenda de veiculos.
+Infraestrutura de banco de dados compartilhada pela plataforma de
+revenda de veiculos: `docker-compose.yml` (execucao local) e manifests
+Kubernetes (Kustomize).
 
 ## O que este repositorio e
 
@@ -31,6 +32,7 @@ so a essa infraestrutura.
 
 ```
 .
+├── docker-compose.yml                <- os dois Postgres para execucao local (sem Kubernetes)
 ├── postgres-core-statefulset.yaml    <- StatefulSet + PVC do banco do sistema-principal-veiculos
 ├── postgres-core-service.yaml        <- Service ClusterIP "postgres-core"
 ├── postgres-core-configmap.yaml      <- POSTGRES_DB (nao sensivel)
@@ -42,7 +44,25 @@ so a essa infraestrutura.
 └── kustomization.yaml                <- agrega todos os recursos acima
 ```
 
-## Como aplicar
+## Como rodar localmente (Docker Compose)
+
+Para rodar os dois servicos direto na maquina (`./mvnw spring-boot:run`),
+sem Kubernetes, suba os dois bancos com o `docker-compose.yml` deste
+repositorio (requer Docker rodando):
+
+```bash
+docker compose up -d
+```
+
+| Container | Banco | Porta no host | Usuario / senha |
+|---|---|---|---|
+| `revenda-postgres-core` | `veiculos_core_db` | `5432` | `postgres` / `postgres` |
+| `revenda-postgres-vendas` | `veiculos_vendas_db` | `5433` | `postgres` / `postgres` |
+
+Esses valores batem com o `application.yml` de cada servico. Para
+derrubar: `docker compose down` (adicione `-v` para apagar tambem os dados).
+
+## Como aplicar no Kubernetes
 
 Com um cluster Kubernetes acessivel (ex.: Minikube ja rodando):
 

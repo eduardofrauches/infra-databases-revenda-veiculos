@@ -1,0 +1,51 @@
+# Bancos PostgreSQL para rodar os dois microsservicos LOCALMENTE (fora do
+# Kubernetes). Os valores abaixo batem exatamente com o que cada servico
+# espera no seu application.yml (datasource):
+#
+#   - sistema-principal-veiculos -> localhost:5432 / veiculos_core_db
+#   - servico-vendas-veiculos    -> localhost:5433 / veiculos_vendas_db
+#   - usuario/senha (ambos):        postgres / postgres
+#
+# Bancos fisicamente separados: um container Postgres para cada servico.
+# Uso: docker compose up -d   (a partir da raiz deste repositorio)
+
+services:
+  postgres-core:
+    image: postgres:16-alpine
+    container_name: revenda-postgres-core
+    environment:
+      POSTGRES_DB: veiculos_core_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_core_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d veiculos_core_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  postgres-vendas:
+    image: postgres:16-alpine
+    container_name: revenda-postgres-vendas
+    environment:
+      POSTGRES_DB: veiculos_vendas_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_vendas_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d veiculos_vendas_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  postgres_core_data:
+  postgres_vendas_data:
