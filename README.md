@@ -44,23 +44,32 @@ so a essa infraestrutura.
 └── kustomization.yaml                <- agrega todos os recursos acima
 ```
 
-## Como rodar localmente (Docker Compose)
+## Instruções de Execução
 
-Para rodar os dois servicos direto na maquina (`./mvnw spring-boot:run`),
-sem Kubernetes, suba os dois bancos com o `docker-compose.yml` deste
-repositorio (requer Docker rodando):
+### Pré-requisitos
+- Docker e Docker Compose instalados e rodando
 
+### 1. Clonar o repositório
+```bash
+git clone https://github.com/eduardofrauches/infra-databases-revenda-veiculos.git
+cd infra-databases-revenda-veiculos
+```
+
+### 2. Subir a infraestrutura local
 ```bash
 docker compose up -d
 ```
 
-| Container | Banco | Porta no host | Usuario / senha |
+Isso sobe os dois bancos PostgreSQL:
+
+| Container | Banco | Porta no host | Usuário / senha |
 |---|---|---|---|
 | `revenda-postgres-core` | `veiculos_core_db` | `5432` | `postgres` / `postgres` |
 | `revenda-postgres-vendas` | `veiculos_vendas_db` | `5433` | `postgres` / `postgres` |
 
-Esses valores batem com o `application.yml` de cada servico. Para
-derrubar: `docker compose down` (adicione `-v` para apagar tambem os dados).
+Esses valores batem com o `application.yml` de cada serviço. Para
+derrubar: `docker compose down` (adicione `-v` para apagar também os
+dados).
 
 ## Como aplicar no Kubernetes
 
