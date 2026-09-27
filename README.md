@@ -71,11 +71,19 @@ Esses valores batem com o `application.yml` de cada serviço. Para
 derrubar: `docker compose down` (adicione `-v` para apagar também os
 dados).
 
+**Portas 5432 e 5433 livres:** se já houver um PostgreSQL instalado na
+máquina (ou outro container) usando a porta `5432` ou `5433`, o
+`docker compose up` falha com erro de porta em uso. Pare esse serviço antes
+de subir os bancos.
+
 ## Como aplicar no Kubernetes
 
-Com um cluster Kubernetes acessivel (ex.: Minikube ja rodando):
+Com um cluster Kubernetes acessivel (ex.: Minikube):
 
 ```bash
+# Cluster local (se ainda nao estiver rodando; requer Minikube e kubectl)
+minikube start
+
 kubectl apply -k .
 ```
 
@@ -83,8 +91,8 @@ Aguarde os dois StatefulSets ficarem prontos antes de subir os
 servicos de aplicacao (eles dependem do banco no startup):
 
 ```bash
-kubectl rollout status statefulset/postgres-core --timeout=120s
-kubectl rollout status statefulset/postgres-vendas --timeout=120s
+kubectl rollout status statefulset/postgres-core --timeout=300s
+kubectl rollout status statefulset/postgres-vendas --timeout=300s
 ```
 
 ## ⚠️ Aviso sobre o Secret
